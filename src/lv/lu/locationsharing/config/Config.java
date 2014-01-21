@@ -17,13 +17,7 @@ public class Config implements Serializable {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-	public int getUserToken() {
-		return userToken;
-	}
-	public void setUserToken(int userToken) {
-		this.userToken = userToken;
-	}
-	int userToken;
+	private String userToken;
 	
 
 	@Override
@@ -32,6 +26,12 @@ public class Config implements Serializable {
 		buf.append("Config:[").append("userId: ").append(getUserId()).append(" ; token: ").append(getUserToken());
 		buf.append("]");
 		return buf.toString();
+	}
+	public String getUserToken() {
+		return userToken;
+	}
+	public void setUserToken(String userToken) {
+		this.userToken = userToken;
 	}
 
 }

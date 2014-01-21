@@ -2,6 +2,8 @@ package lv.lu.locationsharing;
 
 
 
+import lv.lu.locationsharing.application.LocationApplication;
+import lv.lu.locationsharing.config.Config;
 import lv.lu.locationsharing.model.AuthenticationStatus;
 import lv.lu.locationsharing.requests.authentication.AuthenticationRequest;
 
@@ -24,6 +26,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.internal.au;
 import com.octo.android.robospice.JacksonSpringAndroidSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -163,9 +166,14 @@ public class LoginActivity extends Activity {
 		}
 
 		@Override
-		public void onRequestSuccess(AuthenticationStatus listTweets) {
+		public void onRequestSuccess(AuthenticationStatus authentication) {
 			Log.v("Tag","success");
 			Intent i = new Intent(getBaseContext(), MainActivity.class);
+			LocationApplication app=(LocationApplication) getApplication();
+			Config conf=app.getConfig();
+			conf.setUserId(authentication.getId());
+			conf.setUserToken(authentication.getAuthentication_token());
+			app.setConfig(conf);
 			startActivity(i);
 			finish();
 			// Toast.makeText(getApplicationContext(), "WORKED!",

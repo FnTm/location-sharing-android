@@ -105,6 +105,9 @@ public class LocationApplication extends Application {
 		if (configFileExists()) {
 			config = getConfigFromFile();
 		}
+		else{
+			setConfig(new Config());
+		}
 		//sendData();
 	}
 
