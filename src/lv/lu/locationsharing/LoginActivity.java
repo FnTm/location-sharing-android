@@ -2,23 +2,33 @@ package lv.lu.locationsharing;
 
 
 
+import lv.lu.locationsharing.model.AuthenticationStatus;
+import lv.lu.locationsharing.requests.authentication.AuthenticationRequest;
+
+import org.springframework.web.client.HttpClientErrorException;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+
+import com.octo.android.robospice.JacksonSpringAndroidSpiceService;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -37,10 +47,11 @@ public class LoginActivity extends Activity {
 	 */
 	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
 
+	private static final Object AUTHENTICATION_CACHE_KEY2 = "AuthenticationCacheKey2";
+
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
-	private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -52,6 +63,8 @@ public class LoginActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	protected SpiceManager spiceManager;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +103,21 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
+		spiceManager = new SpiceManager(JacksonSpringAndroidSpiceService.class);
+	}
+
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		spiceManager.start(this);
+		
+	}
+
+	@Override
+	protected void onStop() {
+		spiceManager.shouldStop();
+		super.onStop();
 	}
 
 	/**
@@ -103,6 +131,48 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	public void doAuthentication(String email,String password) {
+		spiceManager.execute(new AuthenticationRequest(this,
+				"klavs.taube@gmail.com","password"), AUTHENTICATION_CACHE_KEY2,
+				DurationInMillis.ALWAYS_EXPIRED, new AuthenticationListener());
+	}
+	// inner class of your spiced Activity
+	private class AuthenticationListener implements
+			RequestListener<AuthenticationStatus> {
+
+		@Override
+		public void onRequestFailure(SpiceException spiceException) {
+
+			
+			if (spiceException.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException cause = (HttpClientErrorException) spiceException
+						.getCause();
+
+				switch (Integer.valueOf(cause.getStatusCode().toString())) {
+				case 401:
+					showProgress(false);
+					mPasswordView
+							.setError(getString(R.string.error_incorrect_password));
+					mPasswordView.requestFocus();
+					break;
+
+				default:
+					break;
+				}
+			}
+		}
+
+		@Override
+		public void onRequestSuccess(AuthenticationStatus listTweets) {
+			Log.v("Tag","success");
+			Intent i = new Intent(getBaseContext(), MainActivity.class);
+			startActivity(i);
+			finish();
+			// Toast.makeText(getApplicationContext(), "WORKED!",
+			// Toast.LENGTH_LONG).show();
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -135,9 +205,6 @@ public class LoginActivity extends Activity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (mAuthTask != null) {
-			return;
-		}
 
 		// Reset errors.
 		mEmailView.setError(null);
@@ -150,27 +217,27 @@ public class LoginActivity extends Activity {
 		boolean cancel = false;
 		View focusView = null;
 
-		// Check for a valid password.
-		if (TextUtils.isEmpty(mPassword)) {
-			mPasswordView.setError(getString(R.string.error_field_required));
-			focusView = mPasswordView;
-			cancel = true;
-		} else if (mPassword.length() < 4) {
-			mPasswordView.setError(getString(R.string.error_invalid_password));
-			focusView = mPasswordView;
-			cancel = true;
-		}
-
-		// Check for a valid email address.
-		if (TextUtils.isEmpty(mEmail)) {
-			mEmailView.setError(getString(R.string.error_field_required));
-			focusView = mEmailView;
-			cancel = true;
-		} else if (!mEmail.contains("@")) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
-			focusView = mEmailView;
-			cancel = true;
-		}
+//		// Check for a valid password.
+//		if (TextUtils.isEmpty(mPassword)) {
+//			mPasswordView.setError(getString(R.string.error_field_required));
+//			focusView = mPasswordView;
+//			cancel = true;
+//		} else if (mPassword.length() < 4) {
+//			mPasswordView.setError(getString(R.string.error_invalid_password));
+//			focusView = mPasswordView;
+//			cancel = true;
+//		}
+//
+//		// Check for a valid email address.
+//		if (TextUtils.isEmpty(mEmail)) {
+//			mEmailView.setError(getString(R.string.error_field_required));
+//			focusView = mEmailView;
+//			cancel = true;
+//		} else if (!mEmail.contains("@")) {
+//			mEmailView.setError(getString(R.string.error_invalid_email));
+//			focusView = mEmailView;
+//			cancel = true;
+//		}
 
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
@@ -181,8 +248,8 @@ public class LoginActivity extends Activity {
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
-			mAuthTask = new UserLoginTask();
-			mAuthTask.execute((Void) null);
+			doAuthentication(mEmail,mPassword);
+
 		}
 	}
 
@@ -224,57 +291,6 @@ public class LoginActivity extends Activity {
 			// and hide the relevant UI components.
 			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
-
-	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
-	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
-
-			try {
-				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return false;
-			}
-
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
-			}
-
-			// TODO: register the new account here.
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(final Boolean success) {
-			mAuthTask = null;
-			showProgress(false);
-
-			if (success) {
-				//finish();
-				Intent i = new Intent(getBaseContext(), MainActivity.class);
-				startActivity(i);
-			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
-			}
-		}
-
-		@Override
-		protected void onCancelled() {
-			mAuthTask = null;
-			showProgress(false);
 		}
 	}
 }
