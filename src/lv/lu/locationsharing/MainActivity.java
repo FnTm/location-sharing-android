@@ -133,6 +133,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 // Locate Position
                 switch (position) {
+                //Jâsamaina fragmenti vietam lai ir 1 2 3
                 case 0:
                         ft.replace(R.id.content_frame, fragment1);
                         break;
