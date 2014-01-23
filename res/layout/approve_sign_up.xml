@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/sign_up_token"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/approve_sign_up" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/approve_sign_up_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:text="@string/action_approve_sign_up" />
+
+</LinearLayout>

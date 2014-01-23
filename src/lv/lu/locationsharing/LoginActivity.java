@@ -75,10 +75,10 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        mApp=(LocationApplication) getApplication();
+        /*mApp=(LocationApplication) getApplication();
         if(mApp.getConfig().getUserToken()!=null && mApp.getConfig().getUserToken()!="" ){
         	goToLogin();
-        }
+        }*/
 		setContentView(R.layout.activity_login);
 		setupActionBar();
 		
@@ -111,6 +111,14 @@ public class LoginActivity extends Activity {
 					@Override
 					public void onClick(View view) {
 						attemptLogin();
+					}
+				});
+		findViewById(R.id.sign_up_button).setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent i = new Intent(getBaseContext(), SignUpActivity.class);
+						startActivity(i);
 					}
 				});
 		spiceManager = new SpiceManager(JacksonSpringAndroidSpiceService.class);
