@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import com.octo.android.robospice.SpiceManager;
 
 public class MainActivity extends SherlockFragmentActivity {
@@ -104,6 +105,8 @@ public class MainActivity extends SherlockFragmentActivity {
                 if (savedInstanceState == null) {
                         selectItem(0);
                 }
+                LocationLibrary.forceLocationUpdate(MainActivity.this);
+
         		
     	} 
 
@@ -120,6 +123,7 @@ public class MainActivity extends SherlockFragmentActivity {
                                 mDrawerLayout.openDrawer(mDrawerList);
                         }
                 }
+        		LocationLibrary.forceLocationUpdate(MainActivity.this);
 
                 return super.onOptionsItemSelected(item);
         }

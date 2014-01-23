@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.internal.au;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import com.octo.android.robospice.JacksonSpringAndroidSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -129,7 +130,16 @@ public class LoginActivity extends Activity {
 		spiceManager.shouldStop();
 		super.onStop();
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+       // LocationLibrary.forceLocationUpdate(LoginActivity.this);
 
+	}
+	
+	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -143,7 +153,7 @@ public class LoginActivity extends Activity {
 
 	public void doAuthentication(String email,String password) {
 		spiceManager.execute(new AuthenticationRequest(this,
-				"klavs.taube@gmail.com","password"), AUTHENTICATION_CACHE_KEY2,
+				"janis@peisenieks.lv","password"), AUTHENTICATION_CACHE_KEY2,
 				DurationInMillis.ALWAYS_EXPIRED, new AuthenticationListener());
 	}
 	// inner class of your spiced Activity

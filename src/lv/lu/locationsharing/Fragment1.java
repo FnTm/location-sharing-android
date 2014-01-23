@@ -21,8 +21,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import com.octo.android.robospice.JacksonSpringAndroidSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -64,6 +64,7 @@ public class Fragment1 extends SherlockFragment {
 		super.onStart();
 		spiceManager.start(getActivity());
 		getFriends(mApp.getConfig().getUserToken());
+		LocationLibrary.forceLocationUpdate(getActivity().getApplicationContext());
 	}
 
 	public void getFriends(String userToken) {

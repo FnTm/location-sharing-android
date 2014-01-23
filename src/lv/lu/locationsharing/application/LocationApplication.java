@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
+
 import lv.lu.locationsharing.config.Config;
+import android.app.AlarmManager;
 import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
@@ -80,6 +83,7 @@ public class LocationApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		fileDir = getFilesDir();
+		//setConfig(new Config());
 		// sendMessage();
 		// deleteDatabase(DBHelper.DATABASE_NAME);
 		/*
@@ -100,6 +104,20 @@ public class LocationApplication extends Application {
 		 * e.printStackTrace(); }
 		 */
 		// cleanConfig();Constants.java
+		LocationLibrary.showDebugOutput(true);
+		
+        try {
+            // in most cases the following initialising code using defaults is probably sufficient:
+            //
+            // LocationLibrary.initialiseLibrary(getBaseContext(), "com.your.package.name");
+            //
+            // however for the purposes of the test app, we will request unrealistically frequent location broadcasts
+            // every 1 minute, and force a location update if there hasn't been one for 2 minutes.
+            LocationLibrary.initialiseLibrary(getBaseContext(), 60*1000, 60*2000, "mobi.littlefluffytoys.littlefluffytestclient");
+        }
+        catch (UnsupportedOperationException ex) {
+            Log.d("TestApplication", "UnsupportedOperationException thrown - the device doesn't have any location providers");
+        }
 		Log.v(TAG, fileDir.toString());
 		Log.v(TAG, configFileExists() + "");
 		if (configFileExists()) {
