@@ -8,6 +8,7 @@ import lv.lu.locationsharing.model.AuthenticationStatus;
 import lv.lu.locationsharing.requests.authentication.AuthenticationRequest;
 
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -67,14 +68,19 @@ public class LoginActivity extends Activity {
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
 	protected SpiceManager spiceManager;
+	protected LocationApplication mApp;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+        mApp=(LocationApplication) getApplication();
+        if(mApp.getConfig().getUserToken()!=null && mApp.getConfig().getUserToken()!="" ){
+        	goToLogin();
+        }
 		setContentView(R.layout.activity_login);
 		setupActionBar();
+		
 
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
@@ -107,6 +113,7 @@ public class LoginActivity extends Activity {
 					}
 				});
 		spiceManager = new SpiceManager(JacksonSpringAndroidSpiceService.class);
+		
 	}
 
 	
@@ -160,26 +167,35 @@ public class LoginActivity extends Activity {
 					break;
 
 				default:
+					doAuthentication("","");
 					break;
 				}
+			}
+			else if(spiceException.getCause() instanceof ResourceAccessException){
+				doAuthentication("","");
 			}
 		}
 
 		@Override
 		public void onRequestSuccess(AuthenticationStatus authentication) {
 			Log.v("Tag","success");
-			Intent i = new Intent(getBaseContext(), MainActivity.class);
+			
 			LocationApplication app=(LocationApplication) getApplication();
 			Config conf=app.getConfig();
 			conf.setUserId(authentication.getId());
 			conf.setUserToken(authentication.getAuthentication_token());
 			app.setConfig(conf);
-			startActivity(i);
-			finish();
+			goToLogin();
 			// Toast.makeText(getApplicationContext(), "WORKED!",
 			// Toast.LENGTH_LONG).show();
 		}
 	}
+	
+	protected void goToLogin(){
+		Intent i = new Intent(getBaseContext(), MainActivity.class);
+		startActivity(i);
+		finish();
+		}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

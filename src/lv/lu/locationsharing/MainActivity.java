@@ -13,11 +13,12 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
-import lv.lu.locationsharing.R;
+import com.octo.android.robospice.SpiceManager;
 
 public class MainActivity extends SherlockFragmentActivity {
 
-        // Declare Variables
+	public static final Object GET_FRIENDS_CACHE_KEY = "getFriendsCacheKey";
+		// Declare Variables
         DrawerLayout mDrawerLayout;
         ListView mDrawerList;
         ActionBarDrawerToggle mDrawerToggle;
@@ -30,6 +31,8 @@ public class MainActivity extends SherlockFragmentActivity {
         Fragment fragment3 = new Fragment3();
         private CharSequence mDrawerTitle;
         private CharSequence mTitle;
+    	protected SpiceManager spiceManager;
+
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +104,10 @@ public class MainActivity extends SherlockFragmentActivity {
                 if (savedInstanceState == null) {
                         selectItem(0);
                 }
-        }
+        		
+    	} 
+
+    	
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
