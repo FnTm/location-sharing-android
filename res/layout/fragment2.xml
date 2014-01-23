@@ -11,4 +11,13 @@
         android:layout_centerHorizontal="true" >
     </ListView>
 
+    <ProgressBar
+        android:id="@+id/login_status"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" >
+    </ProgressBar>
+
 </RelativeLayout>
