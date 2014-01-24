@@ -1,5 +1,8 @@
 package lv.lu.locationsharing;
 
+import lv.lu.locationsharing.application.LocationApplication;
+import lv.lu.locationsharing.config.Config;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -14,6 +17,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
+import com.octo.android.robospice.JacksonSpringAndroidSpiceService;
 import com.octo.android.robospice.SpiceManager;
 
 public class MainActivity extends SherlockFragmentActivity {
@@ -47,15 +51,15 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		// Generate title
 		title = new String[] { "Sâkums", "Draugu saraksts", "Uzaicinât draugu",
-				"Uzaicinâtie draugi", "Uzaicinâjumi" };
+				"Uzaicinâtie draugi", "Uzaicinâjumi","Iestatîjumi","Iziet" };
 
 		// Generate subtitle
-		subtitle = new String[] { "", "", "", "", "" };
+		subtitle = new String[] { "", "", "", "", "", "", "" };
 
 		// Generate icon
 		icon = new int[] { R.drawable.action_about, R.drawable.action_settings,
 				R.drawable.action_settings, R.drawable.action_settings,
-				R.drawable.collections_cloud };
+				R.drawable.collections_cloud,R.drawable.collections_cloud,R.drawable.collections_cloud  };
 
 		// Locate DrawerLayout in drawer_main.xml
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,6 +112,22 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 		LocationLibrary.forceLocationUpdate(MainActivity.this);
 
+		spiceManager = new SpiceManager(JacksonSpringAndroidSpiceService.class);
+		
+	}
+
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		spiceManager.start(this);
+		
+	}
+
+	@Override
+	protected void onStop() {
+		spiceManager.shouldStop();
+		super.onStop();
 	}
 
 	@Override
@@ -156,6 +176,13 @@ public class MainActivity extends SherlockFragmentActivity {
 		case 4:
 			ft.replace(R.id.content_frame, fragment5);
 			break;
+		case 5:
+			//ft.replace(R.id.content_frame, fragment5);
+			break;
+		case 6:
+			doLogout();
+			break;
+			
 		}
 		ft.commit();
 		mDrawerList.setItemChecked(position, true);
@@ -165,6 +192,33 @@ public class MainActivity extends SherlockFragmentActivity {
 		// Close drawer
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
+
+	private void doLogout() {
+		LocationApplication mApp=(LocationApplication)getApplication();
+		mApp.setConfig(new Config());
+		Intent i = new Intent(getBaseContext(), LoginActivity.class);
+		startActivity(i);
+		finish();
+	}
+//		spiceManager.execute(new PostLogout(this,
+//				((LocationApplication)getApplication()).getConfig().getUserToken()), "",
+//
+//				DurationInMillis.ALWAYS_EXPIRED, new AuthenticationListener());
+//	}
+//	// inner class of your spiced Activity
+//	private class AuthenticationListener implements
+//			RequestListener<AuthenticationStatus> {
+//
+//		@Override
+//		public void onRequestFailure(SpiceException spiceException) {
+//			
+//		}
+//
+//		@Override
+//		public void onRequestSuccess(AuthenticationStatus authentication) 
+//			goToLogin();
+//		}
+//	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
