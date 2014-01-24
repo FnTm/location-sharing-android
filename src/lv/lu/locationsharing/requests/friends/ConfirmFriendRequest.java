@@ -15,18 +15,18 @@ import android.content.Context;
 import com.octo.android.robospice.request.springandroid.SpringAndroidSpiceRequest;
 
 //Create a request in its own Java file, it should not an inner class of a Context
-public class InviteFriendsRequest extends SpringAndroidSpiceRequest<InviteFriends> {
+public class ConfirmFriendRequest extends SpringAndroidSpiceRequest<InviteFriends> {
 
 	private static String resourceName = "friends";
 	private Context c;
-	private String email;
+	private int userId;
 	private String authToken;
 
-	public InviteFriendsRequest(Context c, String email, String authToken) {
+	public ConfirmFriendRequest(Context c, int userId, String authToken) {
 		super(InviteFriends.class);
 		this.setRetryPolicy(null);
 		this.c = c;
-		this.email = email;
+		this.userId = userId;
 		this.authToken = authToken;
 
 	}
@@ -35,9 +35,8 @@ public class InviteFriendsRequest extends SpringAndroidSpiceRequest<InviteFriend
 	@Override
 	public InviteFriends loadDataFromNetwork() throws Exception {
 		Message message = new Message();
-		message.setEmail(this.email);
 		message.setAuthentication_token(this.authToken);
-		String url = Url.apiUrl + resourceName;
+		String url = Url.apiUrl + resourceName+"/"+this.userId+"/put_as_post";
 		
 		RestTemplate restTemplate = getRestTemplate();
 
@@ -55,34 +54,13 @@ public class InviteFriendsRequest extends SpringAndroidSpiceRequest<InviteFriend
 	}
 	
 	public class Message {
-		private String email;
 		private String authentication_token;
-		public String getEmail() {
-			return email;
-		}
-		public void setEmail(String email) {
-			this.email = email;
-		}
 		public String getAuthentication_token() {
 			return authentication_token;
 		}
 		public void setAuthentication_token(String authentication_token) {
 			this.authentication_token = authentication_token;
 		}
-		
-		
-
 	}
-	public class Container {
-		Message user;
 
-		public Message getUser() {
-			return user;
-		}
-
-		public void setUser(Message user) {
-			this.user = user;
-		}
-		
-	}
 }

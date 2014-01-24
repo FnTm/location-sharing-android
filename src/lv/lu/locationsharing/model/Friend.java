@@ -1,13 +1,26 @@
 package lv.lu.locationsharing.model;
 
 public class Friend {
-String id;
+int id;
+public int getId() {
+	return id;
+}
+public void setId(int id) {
+	this.id = id;
+}
 String name;
 String email;
 double latitude;
 double longitude;
+String updated_at;
 
 
+public String getUpdated_at() {
+	return updated_at;
+}
+public void setUpdated_at(String updated_at) {
+	this.updated_at = updated_at;
+}
 public double getLatitude() {
 	return latitude;
 }
@@ -20,12 +33,7 @@ public double getLongitude() {
 public void setLongitude(double longitude) {
 	this.longitude = longitude;
 }
-public String getId() {
-	return id;
-}
-public void setId(String id) {
-	this.id = id;
-}
+
 public String getName() {
 	return name;
 }

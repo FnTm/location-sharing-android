@@ -6,6 +6,8 @@ import lv.lu.locationsharing.application.LocationApplication;
 import lv.lu.locationsharing.listview.adapter.RequestAdapter;
 import lv.lu.locationsharing.model.Friend;
 import lv.lu.locationsharing.model.GetFriends;
+import lv.lu.locationsharing.model.InviteFriends;
+import lv.lu.locationsharing.requests.friends.ConfirmFriendRequest;
 import lv.lu.locationsharing.requests.friends.GetFriendsRequest;
 
 import org.springframework.web.client.HttpClientErrorException;
@@ -40,6 +42,8 @@ public class Fragment5 extends SherlockFragment {
 	protected LocationApplication mApp;
 	private View mLoginStatusView;
 	private View mLoginFormView;
+	private ArrayList<Friend> list;
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +70,8 @@ public class Fragment5 extends SherlockFragment {
 				// When clicked, show a toast with the TextView text
 				Toast.makeText(getActivity().getApplicationContext(),
 						position + "", Toast.LENGTH_SHORT).show();
+				confirmFriend(mApp.getConfig().getUserToken(),list.get(position).getId());
+				showProgress(true);
 			}
 		});
 
@@ -92,7 +98,6 @@ public class Fragment5 extends SherlockFragment {
 	// inner class of your spiced Activity
 	private class AuthenticationListener implements RequestListener<GetFriends> {
 
-		private ArrayList<Friend> list;
 
 		@Override
 		public void onRequestFailure(SpiceException spiceException) {
@@ -129,6 +134,54 @@ public class Fragment5 extends SherlockFragment {
 			// finish();
 			// Toast.makeText(getApplicationContext(), "WORKED!",
 			// Toast.LENGTH_LONG).show();
+		}
+	}
+
+	public void confirmFriend(String userToken, int userId) {
+		spiceManager.execute(new ConfirmFriendRequest(getActivity(), userId,
+				userToken), MainActivity.GET_FRIENDS_CACHE_KEY,
+				DurationInMillis.ONE_MINUTE, new ConfirmationListener());
+	}
+
+	// inner class of your spiced Activity
+	private class ConfirmationListener implements
+			RequestListener<InviteFriends> {
+
+		private ArrayList<Friend> list;
+
+		@Override
+		public void onRequestFailure(SpiceException spiceException) {
+
+			if (spiceException.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException cause = (HttpClientErrorException) spiceException
+						.getCause();
+
+				switch (Integer.valueOf(cause.getStatusCode().toString())) {
+				case 401:
+
+					break;
+
+				default:
+					break;
+				}
+			} else if (spiceException.getCause() instanceof ResourceAccessException) {
+
+			}
+			Toast.makeText(getActivity(),
+					"Neizdvâs apstiprinât draudzîbu.", Toast.LENGTH_LONG)
+					.show();
+			showProgress(false);
+		}
+
+		@Override
+		public void onRequestSuccess(InviteFriends authentication) {
+			Log.v("Tag", "success");
+			Toast.makeText(getActivity(),
+					"Draudzîba veiksmîgi apstiprinâta.", Toast.LENGTH_LONG)
+					.show();
+			showProgress(false);
+			getFriends(mApp.getConfig().getUserToken());
+
 		}
 	}
 

@@ -75,10 +75,10 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        /*mApp=(LocationApplication) getApplication();
+        mApp=(LocationApplication) getApplication();
         if(mApp.getConfig().getUserToken()!=null && mApp.getConfig().getUserToken()!="" ){
         	goToLogin();
-        }*/
+        }
 		setContentView(R.layout.activity_login);
 		setupActionBar();
 		

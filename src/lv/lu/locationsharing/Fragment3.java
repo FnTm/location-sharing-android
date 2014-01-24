@@ -1,12 +1,10 @@
 package lv.lu.locationsharing;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 
 import lv.lu.locationsharing.application.LocationApplication;
 import lv.lu.locationsharing.model.Friend;
-import lv.lu.locationsharing.model.GetFriends;
 import lv.lu.locationsharing.model.InviteFriends;
-import lv.lu.locationsharing.requests.friends.GetFriendsRequest;
 import lv.lu.locationsharing.requests.friends.InviteFriendsRequest;
 
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,14 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
 import com.octo.android.robospice.JacksonSpringAndroidSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -33,7 +27,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 
 public class Fragment3 extends SherlockFragment {
 	protected SpiceManager spiceManager;
-	protected LocationApplication mApp = (LocationApplication) getActivity().getApplication();
+	protected LocationApplication mApp;
 	
 	
 	@Override
@@ -45,16 +39,16 @@ public class Fragment3 extends SherlockFragment {
 	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
+		mApp = (LocationApplication) getActivity().getApplication();
 		spiceManager = new SpiceManager(JacksonSpringAndroidSpiceService.class);
 		
 		getView().findViewById(R.id.invite_button).setOnClickListener(
                  new View.OnClickListener() {
                          @Override
                          public void onClick(View view) {  
-                                // invateFriend();
+                                 inviteFriend(((EditText)getView().findViewById(R.id.email)).getText().toString(),mApp.getConfig().getUserToken());
                          }
                  });
 		
@@ -80,6 +74,43 @@ public class Fragment3 extends SherlockFragment {
 		}
 		super.onStop();
 	}
+	
+	// inner class of your spiced Activity
+	private class AuthenticationListener implements RequestListener<InviteFriends> {
+
+		private ArrayList<Friend> list;
+
+		@Override
+		public void onRequestFailure(SpiceException spiceException) {
+
+			if (spiceException.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException cause = (HttpClientErrorException) spiceException
+						.getCause();
+
+				switch (Integer.valueOf(cause.getStatusCode().toString())) {
+				case 401:
+					Toast.makeText(getActivity(), "Neizdevâs uzaicinât draugu", Toast.LENGTH_LONG).show();
+					break;
+
+				default:
+					break;
+				}
+			} else if (spiceException.getCause() instanceof ResourceAccessException) {
+                inviteFriend(((EditText)getView().findViewById(R.id.email)).getText().toString(),mApp.getConfig().getUserToken());
+			}
+			//showProgress(false);
+		}
+
+		@Override
+		public void onRequestSuccess(InviteFriends authentication) {
+			Log.v("Tag", "success");
+
+			Toast.makeText(getActivity(), "Uzaicinâjums veiksmîgs", Toast.LENGTH_LONG).show();
+
+
+		}
+	}
+
 	
 
 }
