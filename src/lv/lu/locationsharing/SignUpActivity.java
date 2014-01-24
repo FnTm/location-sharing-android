@@ -66,6 +66,13 @@ public class SignUpActivity extends Activity {
 	protected Context context;
 	
 	@Override
+	protected void onStart() {
+		super.onStart();
+		spiceManager.start(this);
+		
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -111,16 +118,16 @@ public void onRequestFailure(SpiceException spiceException) {
 		switch (Integer.valueOf(cause.getStatusCode().toString())) {
 		case 401:
 			Log.d("LocationSharing", "Unauthorized");
-			stopSpice();
+			
 			break;
 
 		default:
-			stopSpice();
+			
 			break;
 		}
 	} else if (spiceException.getCause() instanceof ResourceAccessException) {
 		
-			stopSpice();
+		
 		
 	}
 }
@@ -130,13 +137,16 @@ public void onRequestFailure(SpiceException spiceException) {
 @Override
 public void onRequestSuccess(Registration arg0) {
 	// TODO Auto-generated method stub
-	stopSpice();
+	
 }
-}
-
-protected void stopSpice() {
-spiceManager.shouldStop();
 }
 	
+	
+
+	@Override
+	 protected void onStop() {
+	  spiceManager.shouldStop();
+	  super.onStop();
+	 }
 	
 }
