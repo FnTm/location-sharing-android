@@ -108,7 +108,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 		if (savedInstanceState == null) {
-			selectItem(1);
+			selectItem(0);
 		}
 		LocationLibrary.forceLocationUpdate(MainActivity.this);
 

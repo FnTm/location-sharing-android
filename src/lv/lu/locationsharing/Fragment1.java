@@ -1,5 +1,6 @@
 package lv.lu.locationsharing;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import lv.lu.locationsharing.application.LocationApplication;
@@ -11,6 +12,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,22 +36,36 @@ public class Fragment1 extends SherlockFragment {
 	protected SpiceManager spiceManager;
 	protected LocationApplication mApp;
 	private GoogleMap map;
+	private SupportMapFragment fragment;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment1, container, false);
-		map = ((SupportMapFragment) getFragmentManager()
-				.findFragmentById(R.id.map)).getMap();
-
-		LatLng sydney = new LatLng(56.949, 24.105);
-
-		map.setMyLocationEnabled(true);
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12));
-
 		return rootView;
 	}
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+	    super.onActivityCreated(savedInstanceState);
+	    FragmentManager fm = getChildFragmentManager();
+	    fragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+	    if (fragment == null) {
+	        fragment = SupportMapFragment.newInstance();
+	        fm.beginTransaction().replace(R.id.map, fragment).commit();
+	    }
+	}
+	
+	@Override
+	public void onResume() {
+	    super.onResume();
+	        map = fragment.getMap();
 
+			LatLng sydney = new LatLng(56.949, 24.105);
+
+			map.setMyLocationEnabled(true);
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12));
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -128,6 +145,22 @@ public class Fragment1 extends SherlockFragment {
 			spiceManager.shouldStop();
 		}
 		super.onStop();
+	}
+	
+	@Override
+	public void onDetach() {
+	    super.onDetach();
+
+	    try {
+	        Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+	        childFragmentManager.setAccessible(true);
+	        childFragmentManager.set(this, null);
+
+	    } catch (NoSuchFieldException e) {
+	        throw new RuntimeException(e);
+	    } catch (IllegalAccessException e) {
+	        throw new RuntimeException(e);
+	    }
 	}
 
 }
