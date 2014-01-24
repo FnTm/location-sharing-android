@@ -91,7 +91,7 @@ public class RegistrationRequest extends SpringAndroidSpiceRequest<Registration>
 		public String getName() {
 			return name;
 		}
-		public void getName(String namen) {
+		public void getName(String name) {
 			this.name = name;
 		}
 
