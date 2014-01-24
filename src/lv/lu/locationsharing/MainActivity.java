@@ -33,7 +33,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	int[] icon;
 	Fragment fragment1 = new Fragment1();
 	Fragment fragment2 = new Fragment2();
-	Fragment fragment3 = new Fragment4();
+	Fragment fragment3 = new Fragment3();
 	Fragment fragment4 = new Fragment4();
 	Fragment fragment5 = new Fragment5();
 	private CharSequence mDrawerTitle;
@@ -58,8 +58,8 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		// Generate icon
 		icon = new int[] { R.drawable.action_about, R.drawable.action_settings,
-				R.drawable.action_settings, R.drawable.action_settings,
-				R.drawable.collections_cloud,R.drawable.collections_cloud,R.drawable.action_logout  };
+				R.drawable.friends_add, R.drawable.action_settings,
+				R.drawable.collections_cloud,R.drawable.settings,R.drawable.action_logout  };
 
 		// Locate DrawerLayout in drawer_main.xml
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

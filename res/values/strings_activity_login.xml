@@ -24,6 +24,7 @@
 	<string name="name">Vārds</string>
 	<string name="approve_sign_up">Reģistrācijas apstiprināšanas kods</string>
 	<string name="action_approve_sign_up">Pabeigt reģistrāciju</string>
+	<string name="action_invite">Uzaicināt draugu</string>
 	
 
 </resources>
