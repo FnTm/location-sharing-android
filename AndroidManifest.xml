@@ -43,6 +43,7 @@
             android:name="lv.lu.locationsharing.LoginActivity"
             android:label="@string/app_name"
             android:parentActivityName="com.actionbarsherlock.app.SherlockActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,7 +58,8 @@
 
         <activity
             android:name="lv.lu.locationsharing.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.actionbarsherlock.app.SherlockActivity" />
@@ -65,7 +67,8 @@
         
         <activity
             android:name="lv.lu.locationsharing.SignUpActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.actionbarsherlock.app.SherlockActivity" />

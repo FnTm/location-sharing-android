@@ -162,7 +162,7 @@ public class LoginActivity extends Activity {
 	public void doAuthentication(String email,String password) {
 		spiceManager.execute(new AuthenticationRequest(this,
 				//"janis@peisenieks.lv","password"), AUTHENTICATION_CACHE_KEY2,
-				"janis@peisenieks.lv","password"), AUTHENTICATION_CACHE_KEY2,
+				email,password), AUTHENTICATION_CACHE_KEY2,
 
 				DurationInMillis.ALWAYS_EXPIRED, new AuthenticationListener());
 	}

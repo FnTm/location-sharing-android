@@ -2,13 +2,9 @@ package lv.lu.locationsharing.requests.registration;
 
 import java.util.List;
 
-import lv.lu.locationsharing.model.AuthenticationStatus;
 import lv.lu.locationsharing.model.Registration;
-import lv.lu.locationsharing.requests.authentication.AuthenticationRequest.Container;
-import lv.lu.locationsharing.requests.authentication.AuthenticationRequest.Message;
 import lv.lu.locationsharing.utils.Url;
 
-import org.json.JSONObject;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -39,13 +35,11 @@ public class RegistrationRequest extends SpringAndroidSpiceRequest<Registration>
 
 	@Override
 	public Registration loadDataFromNetwork() throws Exception {
-		JSONObject root = new JSONObject();
-		root.put("notificationId", "Hello");
 		Message message = new Message();
 		message.setEmail(this.email);
 		message.setPassword(this.password);
-		message.setPassword(this.password_confirmation);
-		message.setPassword(this.name);
+		message.setPassword_confirmation(this.password_confirmation);
+		message.setName(this.name);
 		Container container=new Container();
 		container.setUser(message);
 		String url = Url.apiUrl + resourceName;
@@ -69,7 +63,6 @@ public class RegistrationRequest extends SpringAndroidSpiceRequest<Registration>
 		private String email;
 		private String password;
 		private String password_confirmation;
-		private String name;
 		public String getEmail() {
 			return email;
 		}
@@ -82,18 +75,19 @@ public class RegistrationRequest extends SpringAndroidSpiceRequest<Registration>
 		public void setPassword(String password) {
 			this.password = password;
 		}
-		public String getPasswordConfirmation() {
+		public String getPassword_confirmation() {
 			return password_confirmation;
 		}
-		public void getPasswordConfirmation(String password_confirmation) {
+		public void setPassword_confirmation(String password_confirmation) {
 			this.password_confirmation = password_confirmation;
 		}
 		public String getName() {
 			return name;
 		}
-		public void getName(String name) {
+		public void setName(String name) {
 			this.name = name;
 		}
+		private String name;
 
 
 	}
