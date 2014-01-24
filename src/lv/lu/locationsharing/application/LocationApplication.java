@@ -83,7 +83,7 @@ public class LocationApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		fileDir = getFilesDir();
-		setConfig(new Config());
+		//setConfig(new Config());
 		// sendMessage();
 		// deleteDatabase(DBHelper.DATABASE_NAME);
 		/*
