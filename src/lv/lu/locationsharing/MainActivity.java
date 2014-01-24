@@ -59,7 +59,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		// Generate icon
 		icon = new int[] { R.drawable.action_about, R.drawable.action_settings,
 				R.drawable.action_settings, R.drawable.action_settings,
-				R.drawable.collections_cloud,R.drawable.collections_cloud,R.drawable.collections_cloud  };
+				R.drawable.collections_cloud,R.drawable.collections_cloud,R.drawable.action_logout  };
 
 		// Locate DrawerLayout in drawer_main.xml
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
